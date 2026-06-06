@@ -6,8 +6,8 @@ Thank you for your interest in contributing to Chronicle AI! Please follow these
 
 1. **Clone and Install Dependencies**:
    ```bash
-   git clone https://github.com/your-org/chronicle-ai.git
-   cd chronicle-ai/packages/core
+   git clone https://github.com/soch0601/chronicle-ai.git
+   cd chronicle-ai/core
    npm install
    ```
 
