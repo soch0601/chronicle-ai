@@ -20,8 +20,12 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
+    "shipit": "dotenv -- npm publish",
     "test:unit": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js tests/ --config ../../jest.config.cjs --testPathIgnorePatterns=tests/integration/",
     "test:integration": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js tests/integration/ --config ../../jest.config.cjs",
     "validate-workflow": "ts-node src/cli/validate.ts"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0"
   }
 }
