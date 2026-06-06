@@ -1,0 +1,16 @@
+{
+    "name": "SubWorkflow",
+    "version": "1.0.0",
+    "initialState": "start",
+    "agents": {},
+    "states": {
+        "start": {
+            "action": { "type": "function", "path": "packages/core/tests/mocks/testAction.js" },
+            "verification": { "type": "function", "path": "packages/core/tests/mocks/testVerification.js", "expectedOutputs": ["SUCCESS"] },
+            "stateVariables": { "read": [], "write": ["testValue"] },
+            "transitions": [
+                { "condition": "SUCCESS", "nextState": "__END__" }
+            ]
+        }
+    }
+}

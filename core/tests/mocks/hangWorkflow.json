@@ -1,0 +1,17 @@
+{
+  "name": "HangWorkflow",
+  "version": "1.0.0",
+  "initialState": "start",
+  "agents": {},
+  "states": {
+    "start": {
+      "action": { "type": "bash", "command": "node -e \"setTimeout(()=>{}, 5000)\"" },
+      "verification": { "type": "bash", "command": "echo SUCCESS", "expectedOutputs": ["SUCCESS"] },
+      "stateVariables": { "read": [], "write": [] },
+      "transitions": [
+        { "condition": "SUCCESS", "nextState": "__END__" },
+        { "condition": "FAILURE", "nextState": "__END__" }
+      ]
+    }
+  }
+}

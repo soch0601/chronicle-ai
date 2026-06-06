@@ -1,0 +1,154 @@
+{
+    "name": "project-auto-summarizer",
+    "version": "1.0.0",
+    "initialState": "gather_repository_files",
+    "agents": {
+        "thinking": {}
+    },
+    "settings": {
+        "cwd": "./examples"
+    },
+    "maxSteps": 15,
+    "states": {
+        "gather_repository_files": {
+            "stateVariables": {
+                "write": [
+                    "repository_files"
+                ]
+            },
+            "action": {
+                "type": "function",
+                "path": "./actions/actionListFiles.ts",
+                "args": {
+                    "target_directory": "src"
+                }
+            },
+            "verification": {
+                "type": "function",
+                "path": "./verifications/verifyDefault.ts",
+                "expectedOutputs": [
+                    "SUCCESS",
+                    "FAILURE"
+                ]
+            },
+            "transitions": [
+                {
+                    "condition": "SUCCESS",
+                    "nextState": "prepare_parallel_summaries"
+                },
+                {
+                    "condition": "FAILURE",
+                    "nextState": "__END__"
+                }
+            ]
+        },
+        "prepare_parallel_summaries": {
+            "stateVariables": {
+                "read": [
+                    "repository_files"
+                ],
+                "write": [
+                    "dynamic_workflows"
+                ]
+            },
+            "action": {
+                "type": "function",
+                "path": "./actions/actionPrepareEvaluationWorkflows.ts",
+                "args": {
+                    "task_template_type": "file-summary-blueprint"
+                }
+            },
+            "verification": {
+                "type": "function",
+                "path": "./verifications/verifyDefault.ts",
+                "expectedOutputs": [
+                    "SUCCESS",
+                    "FAILURE"
+                ]
+            },
+            "transitions": [
+                {
+                    "condition": "SUCCESS",
+                    "nextState": "spawn_parallel_summaries"
+                },
+                {
+                    "condition": "FAILURE",
+                    "nextState": "__END__"
+                }
+            ]
+        },
+        "spawn_parallel_summaries": {
+            "comment": "--- FAN OUT LAYER ---",
+            "stateVariables": {
+                "read": [
+                    "dynamic_workflows"
+                ],
+                "write": [
+                    "spawn_results",
+                    "spawn_status"
+                ]
+            },
+            "action": {
+                "type": "function",
+                "path": "./actions/actionSpawnSubWorkflows.ts"
+            },
+            "verification": {
+                "type": "function",
+                "path": "./verifications/verifyDefault.ts",
+                "expectedOutputs": [
+                    "SUCCESS",
+                    "PARTIAL_FAILURE",
+                    "FATAL_FAILURE"
+                ]
+            },
+            "transitions": [
+                {
+                    "condition": "SUCCESS",
+                    "nextState": "reduce_project_summary"
+                },
+                {
+                    "condition": "PARTIAL_FAILURE",
+                    "nextState": "reduce_project_summary"
+                },
+                {
+                    "condition": "FATAL_FAILURE",
+                    "nextState": "__END__"
+                }
+            ]
+        },
+        "reduce_project_summary": {
+            "comment": "--- FAN IN / REDUCE LAYER ---",
+            "agent": "thinking",
+            "stateVariables": {
+                "read": [
+                    "spawn_results"
+                ],
+                "write": [
+                    "project_readme_summary"
+                ]
+            },
+            "action": {
+                "type": "function",
+                "path": "./actions/actionLLMPrompt.ts",
+                "args": {
+                    "output_key": "project_readme_summary",
+                    "system_prompt": "You are a Technical Documentation Specialist.",
+                    "prompt_template": "Analyze these individual file summaries compiled from the source directory and write a comprehensive, high-level project overview mapping out the systemic architecture:\n\n{{spawn_results}}"
+                }
+            },
+            "verification": {
+                "type": "function",
+                "path": "./verifications/verifyDefault.ts",
+                "expectedOutputs": [
+                    "SUCCESS"
+                ]
+            },
+            "transitions": [
+                {
+                    "condition": "default",
+                    "nextState": "__END__"
+                }
+            ]
+        }
+    }
+}
