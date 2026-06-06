@@ -1,7 +1,18 @@
 {
   "name": "@chronicle-ai/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "The Enterprise Statechart Engine for AI Agents. A hardened, schema-driven orchestration layer built on LangGraph.js.",
+  "author": "Chris (https://github.com/soch0601)",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soch0601/chronicle-ai.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/soch0601/chronicle-ai/issues"
+  },
+  "homepage": "https://github.com/soch0601/chronicle-ai/tree/main/packages/core#readme",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +31,7 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "shipit": "dotenv -- npm publish",
+    "shipit": "dotenv -- npm publish --no-workspaces",
     "test:unit": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js tests/ --config ../../jest.config.cjs --testPathIgnorePatterns=tests/integration/",
     "test:integration": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js tests/integration/ --config ../../jest.config.cjs",
     "validate-workflow": "ts-node src/cli/validate.ts"
@@ -30,5 +41,23 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "statecharts",
+    "state-machine",
+    "langgraph",
+    "langgraph-js",
+    "orchestration",
+    "llm",
+    "enterprise",
+    "multi-agent",
+    "agentic-workflows",
+    "llm-orchestration",
+    "deterministic-ai",
+    "circuit-breakers",
+    "human-in-the-loop",
+    "cognitive-architectures"
+  ]
 }

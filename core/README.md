@@ -1,6 +1,6 @@
 # 🧵 Chronicle AI
 
-![Chronicle AI Logo](assets/logo.png)
+![Chronicle AI Logo](https://github.com/soch0601/chronicle-ai/blob/main/core/assets/logo.png?raw=true)
 
 ### **The Enterprise Statechart Engine for AI Agents.**
 Chronicle AI is a hardened, schema-driven orchestration layer built on top of [LangGraph.js](https://github.com/langchain-ai/langgraphjs). It bridges the gap between chaotic, non-deterministic LLM behaviors and predictable, deterministic enterprise software patterns.
