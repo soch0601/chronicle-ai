@@ -1,5 +1,12 @@
 import { TokenUsage } from './schema.js';
 
+export interface ReplayHashes {
+    workflowHash: string;
+    actionHash?: string;
+    verificationHash?: string;
+    sandboxFiles?: Record<string, string>;
+}
+
 export interface TapeSnapshot {
     _threadId: string;
     _stepNumber: number;
@@ -10,6 +17,7 @@ export interface TapeSnapshot {
     toolOutput: any;
     _transitionReason?: string;
     _usage?: TokenUsage | null;
+    hashes?: ReplayHashes;
 }
 
 export interface ITapeStorage {

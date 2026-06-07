@@ -1,6 +1,6 @@
 {
   "name": "@chronicle-ai/core",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "The Enterprise Statechart Engine for AI Agents. A hardened, schema-driven orchestration layer built on LangGraph.js.",
   "author": "Chris (https://github.com/soch0601)",
   "license": "Apache-2.0",

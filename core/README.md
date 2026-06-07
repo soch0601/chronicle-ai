@@ -20,6 +20,7 @@ While popular AI frameworks focus on the "magic" of LLM prompting, Chronicle AI 
 | **Production Regression** | A prompt update or model change subtly breaks a downstream workflow step, completely invisible until a user encounters a crash. | **Deterministic Transaction Tapes & AI Evals.** Every execution step is serialized to an immutable "Tape." When logic or prompts change, the `evalRunner` replays historical tapes through an AI Judge to catch semantic regressions before deployment. |
 | **Vendor / Architecture Lock-in** | Graph flows are hardcoded in complex application code, requiring a full compilation, code changes, and redeployment to modify business logic. | **Portable, Schema-Driven Engine.** Your entire multi-agent graph layout, states, and transitions are defined in a standard, portable JSON schema. Business operations can be updated dynamically at runtime without a code deploy. |
 | **Asynchronous Scale** | Long-running agent workflows lock up server memory waiting for external APIs, parallel microservices, or human approvals. | **Distributed Dehydration & Fan-Out.** Natively supports Bring-Your-Own (BYO) cluster orchestration. By returning `__SUSPEND__`, Chronicle safely dehydrates graph states, freeing up server resources until external workers (Kafka, SQS) push it back to execution. |
+| **Rogue Code Execution** | Local shell tools run natively with full host OS privileges, allowing a hallucinating or malicious agent to damage system files. | **WASI-Isolated Sandboxing.** Toggling `sandboxed: true` isolates local bash scripts inside an ironclad WebAssembly System Interface runtime container with strict manifest file tracking. |
 
 
 - Bring Your Own (BYO) Everything: Completely decoupled. Pass any storage adapter (Local File System, Postgres, Redis), cluster orchestrator, MCP tools, sub-workflows, or models at runtime.
@@ -93,6 +94,13 @@ The validator acts as an architectural gatekeeper, enforcing:
 - The Inverse Output Contract: Ensures every outcome declared in a node's expectedOutputs array has a matching transition rule. Phantom rules or unhandled outputs throw compilation faults.
 - Implicit Error Paths: If a state utilizes dangerous primitives (like bash commands), the engine forces the developer to define an explicit FAILURE or validation catch-all path.
 - Isolated State Primitives: Blocks developers from manually creating variables prefixed with an underscore (_), safeguarding the framework's runtime isolation invariants.
+
+## Cryptographic Replay Protection (Zero Blindspots)
+Chronicle AI protects your production pipelines against silent environment drift. When a node runs, the engine logs absolute SHA-256 cryptographic signatures of your workflow graph layouts, script dependencies, and sandboxed file parameters directly into the historical event snapshot ledger.
+
+During a replay test run:
+- **Hash-Drift Validation**: It automatically recalibrates current signatures and flags modified codebase files, altered templates, or layout mutations.
+- **Fail-Safe CLI Gates**: If a change or un-sandboxed runtime dependency is discovered, the engine protects your pipeline. In interactive modes, it intercepts execution to prompt the developer for confirmation. In non-interactive CI/CD grids (e.g., GitHub Actions), it terminates with a fail-safe cutoff code to prevent infinite background hangs.
 
 
 ## Regression Testing with Isolated Node Replays

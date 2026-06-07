@@ -41,9 +41,9 @@ When a node executes, it does not see the entire global state. Instead, it recei
 
 Every node in a Chronicle graph follows a strict lifecycle managed by the `nodeFactory`:
 
-1.  **Replay Check**: If in `replay` mode, the node checks the **Transaction Tape** for a cached result.
-2.  **Safety Gates**: Enforces autonomous cyclic recursion boundaries. If the node is hit repeatedly without human interaction, a cycle circuit breaker is tripped.
-3.  **Action Phase**: The primary logic (LLM call, Bash script, dynamic sub-workflow, or function) is executed:
+1.  **Replay Check & Validation**: If in `replay` mode, the node extracts the cached tape. It runs a cryptographic audit matching current layout, action, and verification source bytes against recorded values to intercept structural drift.
+2.  **Safety Gates**: Enforces autonomous cyclic recursion circuit breakers.
+3.  **Action Phase**: The primary logic is executed. If `sandboxed: true` is set on a bash primitive, execution is isolated within a dedicated WebAssembly (WASI) runtime process container, mounting only declared files.
     - If `outputSchema` is defined, the action output is validated against the schema (Zod or file export) immediately.
 4.  **Verification Phase**: A separate verification step (function, bash command, or MCP tool) validates the action result and asserts a transition condition.
 5.  **Recording Phase**: The execution snapshot is serialized to the **Transaction Tape** for replayability.
@@ -61,10 +61,17 @@ Transaction Tapes are the "Flight Data Recorder" for your AI. They are stored as
   "nodeName": "calculate_risk",
   "workflowName": "risk-analysis",
   "workflowVersion": "1.0.0",
-  "inputState": { ... },
-  "toolOutput": { ... },
+  "inputState": { "query": "audit" },
+  "toolOutput": { "status": "processed" },
   "_transitionReason": "Risk score 85 exceeded threshold",
-  "_usage": { "promptTokens": 120, "completionTokens": 50, "totalTokens": 170 }
+  "_usage": { "promptTokens": 120, "completionTokens": 50, "totalTokens": 170 },
+  "hashes": {
+    "workflowHash": "a1b2c3d4...",
+    "actionHash": "e5f6g7h8...",
+    "sandboxFiles": {
+      "src/scripts/eval.py": "9ba2c4e..."
+    }
+  }
 }
 ```
 
