@@ -2,7 +2,7 @@ import { StateGraph, END } from "@langchain/langgraph";
 import { MemorySaver } from "@langchain/langgraph";
 import { AgentState, AgentStateType } from "./schema.js";
 import { WorkflowSchema } from './schemaDefinitions.js';
-import { createDynamicNode } from "./nodeFactory.js";
+import { createDynamicNode, warmupWasm } from "./nodeFactory.js";
 import { WorkflowObserver } from "./observer.js";
 
 export class HardGateError extends Error {
@@ -131,4 +131,24 @@ export function compileWorkflow(schema: WorkflowSchema, observers: WorkflowObser
         checkpointer: checkpointerOverride || checkpointer,
         interruptBefore: interruptBefore as any
     });
+}
+
+export class ChronicleEngine {
+    private compiledWorkflow: ReturnType<typeof compileWorkflow>;
+
+    constructor(schema: WorkflowSchema, observers: WorkflowObserver[] = [], checkpointerOverride?: any) {
+        this.compiledWorkflow = compileWorkflow(schema, observers, checkpointerOverride);
+    }
+
+    public async warmup(): Promise<void> {
+        await warmupWasm();
+    }
+
+    public async execute(input: any, config?: any): Promise<any> {
+        return this.compiledWorkflow.invoke(input, config);
+    }
+
+    public getWorkflow() {
+        return this.compiledWorkflow;
+    }
 }

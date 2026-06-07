@@ -30,6 +30,9 @@ export interface ActionDefinition {
   name?: string;    // For "mcp"
   timeout?: number; // Max execution time in ms (default 30s)
   requiresApproval?: boolean; // If true, forces HITL approval before execution
+  sandboxed?: boolean;
+  sandboxFiles?: string[];
+  sandboxEnv?: string[];
 }
 
 export interface VerificationDefinition {
@@ -39,6 +42,9 @@ export interface VerificationDefinition {
   name?: string;    // For "mcp"
   timeout?: number; // Max execution time in ms (default 30s)
   expectedOutputs: string[]; // Strict list of all possible outputs
+  sandboxed?: boolean;
+  sandboxFiles?: string[];
+  sandboxEnv?: string[];
 }
 
 export interface StateVariablesFilter {

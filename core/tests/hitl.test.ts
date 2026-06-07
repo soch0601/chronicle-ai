@@ -8,7 +8,8 @@ await jest.unstable_mockModule('../src/dataReplay.js', () => ({
     readState: jest.fn()
 }));
 
-const { compileWorkflow, agentManager } = await import("../src/index.js");
+const { compileWorkflow } = await import("../src/engine.js");
+const { agentManager } = await import("../src/agentManager.js");
 
 const hitlSchema = {
     name: "HITLTestWorkflow",

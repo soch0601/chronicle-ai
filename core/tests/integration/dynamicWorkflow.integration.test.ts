@@ -1,7 +1,7 @@
 import { getMockPath } from '../utils/mockPaths.js';
 import fs from 'fs';
 import path from 'path';
-import { createWorkflowGraph } from '../../src/index.js';
+import { createWorkflowGraph } from '../../src/engine.js';
 import { WorkflowSchema } from '../../src/schemaDefinitions.js';
 
 describe("Dynamic Workflow Integration", () => {

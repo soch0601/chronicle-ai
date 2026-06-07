@@ -8,7 +8,7 @@ await jest.unstable_mockModule('../src/dataReplay.js', () => ({
 }));
 
 // 2. Import Framework Core
-const { createWorkflowGraph } = await import("../src/index.js");
+const { createWorkflowGraph } = await import("../src/engine.js");
 
 const testParentSchema: any = {
     name: "ParentWorkflow",

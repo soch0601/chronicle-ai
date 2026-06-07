@@ -63,6 +63,32 @@ function validateNodes(schema: WorkflowSchema) {
             throw new WorkflowValidationError(`State '${stateName}' references undefined agent '${stateDef.agent}'.`);
         }
 
+        // Sandboxed Action/Verification Validation
+        const action = stateDef.action;
+        if (action?.sandboxed) {
+            if (action.type !== "bash") {
+                throw new WorkflowValidationError(`State '${stateName}' action has 'sandboxed' set to true, but only 'bash' type actions support sandboxing.`);
+            }
+            if (action.sandboxFiles && !Array.isArray(action.sandboxFiles)) {
+                throw new WorkflowValidationError(`State '${stateName}' action 'sandboxFiles' must be an array of strings.`);
+            }
+            if (action.sandboxEnv && !Array.isArray(action.sandboxEnv)) {
+                throw new WorkflowValidationError(`State '${stateName}' action 'sandboxEnv' must be an array of strings.`);
+            }
+        }
+        const verification = stateDef.verification;
+        if (verification?.sandboxed) {
+            if (verification.type !== "bash") {
+                throw new WorkflowValidationError(`State '${stateName}' verification has 'sandboxed' set to true, but only 'bash' type verifications support sandboxing.`);
+            }
+            if (verification.sandboxFiles && !Array.isArray(verification.sandboxFiles)) {
+                throw new WorkflowValidationError(`State '${stateName}' verification 'sandboxFiles' must be an array of strings.`);
+            }
+            if (verification.sandboxEnv && !Array.isArray(verification.sandboxEnv)) {
+                throw new WorkflowValidationError(`State '${stateName}' verification 'sandboxEnv' must be an array of strings.`);
+            }
+        }
+
         // 2. Verification Integrity
         const expectedOutputs = stateDef.verification?.expectedOutputs || [];
         if (expectedOutputs.length === 0) {

@@ -1,4 +1,4 @@
-import { createWorkflowGraph } from '../../src/index.js';
+import { createWorkflowGraph } from '../../src/engine.js';
 import { WorkflowSchema } from '../../src/schemaDefinitions.js';
 import { toolRegistry } from '../../src/toolRegistry.js';
 import { getMockPath } from '../utils/mockPaths.js';

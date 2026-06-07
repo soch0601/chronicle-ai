@@ -3,7 +3,8 @@ import { jest } from '@jest/globals';
 import { AIMessage } from "@langchain/core/messages";
 
 // 2. Import Framework Core
-const { createWorkflowGraph, agentManager } = await import("../src/index.js");
+const { createWorkflowGraph } = await import("../src/engine.js");
+const { agentManager } = await import("../src/agentManager.js");
 const { createDynamicNode } = await import("../src/nodeFactory.js");
 
 const mockStorage = {
