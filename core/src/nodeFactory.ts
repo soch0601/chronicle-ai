@@ -8,6 +8,7 @@ import { validateWorkflowSchema } from "./workflowValidator.js";
 import { spawn } from "child_process";
 import fs from "fs/promises";
 import path from "path";
+import { pathToFileURL } from "url";
 import { TokenUsage } from "./schema.js";
 export { warmupWasm, resetWasmCache } from "./wasmSandbox.js";
 import { executeSandboxedBash } from "./wasmSandbox.js";
@@ -358,7 +359,7 @@ async function executeAction(action: ActionDefinition, filteredState: any, agent
             let mod = actionCache.get(cacheKey);
             if (!mod) {
                 const absolutePath = path.isAbsolute(action.path!) ? action.path! : path.resolve(cwd, action.path!);
-                mod = await import(`file://${absolutePath}`);
+                mod = await import(pathToFileURL(absolutePath).href);
                 actionCache.set(cacheKey, mod);
             }
             if (typeof mod.run !== 'function') throw new Error(`Action at ${action.path} lacks 'run' function.`);
@@ -479,7 +480,7 @@ async function validateOutput(actionResult: any, schemaDef: any) {
         let mod = actionCache.get(cacheKey);
         if (!mod) {
             const absolutePath = path.isAbsolute(schemaDef) ? schemaDef : path.resolve(process.cwd(), schemaDef);
-            mod = await import(`file://${absolutePath}`);
+            mod = await import(pathToFileURL(absolutePath).href);
             actionCache.set(cacheKey, mod);
         }
         schema = mod.schema;
@@ -535,7 +536,7 @@ async function executeVerification(verification: ActionDefinition, actionResult:
             let mod = actionCache.get(cacheKey);
             if (!mod) {
                 const absolutePath = path.isAbsolute(verification.path!) ? verification.path! : path.resolve(cwd, verification.path!);
-                mod = await import(`file://${absolutePath}`);
+                mod = await import(pathToFileURL(absolutePath).href);
                 actionCache.set(cacheKey, mod);
             }
             if (typeof mod.verify !== 'function') throw new Error(`Verification at ${verification.path} lacks 'verify' function.`);

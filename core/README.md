@@ -232,6 +232,28 @@ The project is an AI Harness platform designed to manage workflow transitions ba
 4. **Data Replay and Evaluation**: Utilizes interfaces and types from `src/dataReplay.ts` and `src/evals/loader.ts` to record and manage workflow execution history, as well as evaluate tool outputs against re-run node logic.
 ```
 
+## 🧪 Testing & Jest Configuration
+
+Since `@chronicle-ai/core` is published as native ES Modules (ESM), developers running standard CommonJS Jest pipelines (`ts-jest`) may run into parsing issues (e.g., `SyntaxError: Unexpected token 'export'`) or resolver issues with standard ESM `file:///` dynamic imports.
+
+To ensure compatibility with Jest, add the following configuration to your `jest.config.js` or `jest.config.cjs`:
+
+```javascript
+module.exports = {
+  transform: {
+    '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!@chronicle-ai|@wasmer)'
+  ],
+  moduleNameMapper: {
+    '^file:///(.*)$': '$1', // strip file:/// for Jest's resolver
+  }
+};
+```
+
+This maps standard file URLs and ensures ES Modules in `node_modules` are properly transformed.
+
 ## 📚 Resources
    - Looking to contribute? Check out our [Contributing Guidelines](CONTRIBUTING.md).
    - Curious about the core engine design? Read the [Architecture Deep-Dive](ARCHITECTURE.md).

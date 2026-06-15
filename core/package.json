@@ -1,6 +1,6 @@
 {
   "name": "@chronicle-ai/core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "The Enterprise Statechart Engine for AI Agents. A hardened, schema-driven orchestration layer built on LangGraph.js.",
   "author": "Chris (https://github.com/soch0601)",
   "license": "Apache-2.0",
@@ -33,6 +33,7 @@
     "build": "tsc",
     "prepublishOnly": "npm run build",
     "shipit": "dotenv -- npm publish --no-workspaces",
+    "example": "tsx examples/run.ts",
     "test:unit": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js tests/ --config ../../jest.config.cjs --testPathIgnorePatterns=tests/integration/",
     "test:integration": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js tests/integration/ --config ../../jest.config.cjs",
     "validate-workflow": "ts-node src/cli/validate.ts"
